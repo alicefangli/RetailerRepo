@@ -15,7 +15,7 @@ public interface CustomerPointsRepo {
 	public List<Transaction> getTransactions(Customer customer) throws DatabaseException;
 	
 	//Save Transaction Points when a transaction happens
-	public boolean savePoints(Transaction transaction, Customer customer) throws DatabaseException;
+	public int savePoints(Transaction transaction, Customer customer) throws DatabaseException;
 	
 	//Get specific month points that the customer accumulated
 	public int getMonthlyPoints(Customer customer, int month, int year) throws DatabaseException;

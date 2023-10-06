@@ -19,21 +19,22 @@ import com.retailer.rewards.model.*;
 @Repository
 public class CustomerPointRepoImpl implements CustomerPointsRepo {
 	
-	//private JdbcTemplate template;  
+	private JdbcTemplate template;  
 	
 	/**Get all customers info from customer table
 	 * Sql will be: select fullName, address, phone, email from customer_table;
 	 * @return
 	 */
-/*	CustomerPointRepoImpl(JdbcTemplate template) {
+	public CustomerPointRepoImpl(JdbcTemplate template) {
 		this.template = template;
-	}*/
+	}
+	
 	public List<Customer> getCustomers() throws DatabaseException {
 		String sql = "select * from customer_table";
 		CustomerMapper mapper = new CustomerMapper();
 		List<Customer> list = new ArrayList<Customer>();
 		try {
-		//	list = template.query(sql, mapper);
+			list = template.query(sql, mapper);
 		} catch (Exception e) {
 			throw new DatabaseException(e.getMessage());
 		}
@@ -69,7 +70,7 @@ public class CustomerPointRepoImpl implements CustomerPointsRepo {
 		
 		CustomerMapper mapper = new CustomerMapper();
 		try {
-		//	list = template.query(sql.toString(), mapper);
+			list = template.query(sql.toString(), mapper);
 		} catch(Exception e) {
 			throw new DatabaseException(e.getMessage());
 		}
@@ -94,7 +95,7 @@ public class CustomerPointRepoImpl implements CustomerPointsRepo {
 		
 		TransactionMapper mapper = new TransactionMapper();
 		try {
-		//	list = template.query(sql, mapper);
+			list = template.query(sql, mapper);
 		} catch (Exception e) {
 			throw new DatabaseException(e.getMessage());
 		}
@@ -104,7 +105,7 @@ public class CustomerPointRepoImpl implements CustomerPointsRepo {
 	}
 	
 	//Save Transaction Points when a new transaction happens
-		public boolean savePoints(Transaction transaction, Customer customer) throws DatabaseException {
+		public int savePoints(Transaction transaction, Customer customer) throws DatabaseException {
 			Integer points = 0;
 			float amount = transaction.getPurchaseAmout();
 			
@@ -127,11 +128,11 @@ public class CustomerPointRepoImpl implements CustomerPointsRepo {
 			String sql = "insert into transaction_table (customer_id, purchase_date, purchase_amount, points) "
 					+ "values(" + custId + ",sysdate, " + amount + ", " + points + ")";
 			try {
-			//	template.execute(sql);
+				template.execute(sql);
 			}catch (Exception e) {
 				throw new DatabaseException(e.getMessage());
 			}
-			return true;
+			return points;
 		}
 		
 		
@@ -153,13 +154,13 @@ public class CustomerPointRepoImpl implements CustomerPointsRepo {
 			newYear = year + 1;
 			newMonth = 1;
 		}
-		Date d2 = new GregorianCalendar(year, month, 1).getTime();
-		String sql = "select * from transaction_table where customer_id = " + custId + " and purchase_date > " + 
+		Date d2 = new GregorianCalendar(newYear, newMonth, 1).getTime();
+		String sql = "select * from transaction_table where customer_id = " + custId + " and purchase_date >= " + 
 		parseDate(d1.toString()) + " and purchase_date < " + parseDate(d2.toString());
 		TransactionMapper mapper = new TransactionMapper();
 		List<Transaction> list = new ArrayList<>();
 		try {
-		//	list = template.query(sql, mapper);
+			list = template.query(sql, mapper);
 		} catch(Exception e) {
 			throw new DatabaseException(e.getMessage());
 		}

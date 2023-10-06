@@ -12,8 +12,11 @@ import com.retailer.rewards.repository.DatabaseException;
 
 @Service
 public class CustomerPointServiceImpl implements CustomerPointsService {
-	@Autowired
-	CustomerPointsRepo repo;
+	private CustomerPointsRepo repo;
+	
+	public CustomerPointServiceImpl(CustomerPointsRepo repo) {
+		this.repo = repo;
+	}
 	
 	@Override
 	public List<Customer> getCustomers() throws DatabaseException {
@@ -34,7 +37,7 @@ public class CustomerPointServiceImpl implements CustomerPointsService {
 	}
 
 	@Override
-	public boolean savePoints(Transaction transaction, Customer customer) throws DatabaseException {
+	public int savePoints(Transaction transaction, Customer customer) throws DatabaseException {
 		// TODO Auto-generated method stub
 		return repo.savePoints(transaction, customer);
 	}
