@@ -1,6 +1,6 @@
 package com.retailer.rewards.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Transaction {
 	private Integer TransactionId;
@@ -9,6 +9,15 @@ public class Transaction {
 	private float purchaseAmout;
 	private Integer points;
 	
+	public Transaction() {}
+	
+	public Transaction(Integer transId, Integer custId, Date d, float amount, Integer p) {
+		this.TransactionId = transId;
+		this.customerId = custId;
+		this.purchaseDate = d;
+		this.purchaseAmout = amount;
+		this.points = p;
+	}
 	public Integer getTransactionId() {
 		return TransactionId;
 	}

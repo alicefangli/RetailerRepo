@@ -3,7 +3,7 @@ package com.retailer.rewards.model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.jdbc.core.RowMapper;
+/*import org.springframework.jdbc.core.RowMapper;
 
 public class TransactionMapper implements RowMapper<Transaction> {
 	public Transaction mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -14,4 +14,4 @@ public class TransactionMapper implements RowMapper<Transaction> {
 		trans.setPoints(rs.getInt("points"));
 		return trans;
 	}
-}
+} */

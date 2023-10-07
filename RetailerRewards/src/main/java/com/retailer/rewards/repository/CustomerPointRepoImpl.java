@@ -11,34 +11,65 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+//import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.retailer.rewards.model.*;
+import com.retailer.rewards.model.Customer;
+//import com.retailer.rewards.model.CustomerMapper;
+import com.retailer.rewards.model.Transaction;
+//import com.retailer.rewards.model.TransactionMapper;
+
+import jakarta.annotation.PostConstruct;
 
 @Repository
 public class CustomerPointRepoImpl implements CustomerPointsRepo {
+	//Because database is not available, will use two lists to simulate database
+	List<Customer> cList = new ArrayList<>();
+	List<Transaction> transList = new ArrayList<>();
 	
-	private JdbcTemplate template;  
+	@PostConstruct
+	public void setUpData() {
+		Customer cust1 = new Customer(1,"John Smith", "123 Main St, Palo, CA", "123456789", "john.smith@example.com" );
+		Customer cust2 = new Customer(2, "David Hall", "234 Adam Ave, Bell, CA", "234567891","david.hall@example.com");
+		Customer cust3 = new Customer(3, "Aaron Sade", "345 Bell St, Carlo, CA", "345678912", "aaron.sade@example.com");
+		Customer cust4 = new Customer(4, "Bob Adams", "456 Charlie St, Dell, CA", "456789123", "bob.adams@example.com");
+		
+		cList.add(cust1);
+		cList.add(cust2);
+		cList.add(cust3);
+		cList.add(cust4);
+		
+		Date d1 = new GregorianCalendar(2023, 7, 2).getTime();
+		Transaction t1 = new Transaction(1, 1, this.parseDate(d1.toString()), 48.45f, 0);
+		d1 = new GregorianCalendar(2023, 7, 8).getTime();
+		Transaction t2 = new Transaction(2, 1, this.parseDate(d1.toString()), 59.31f, 9);
+		d1 = new GregorianCalendar(2023, 8, 15).getTime();
+		Transaction t3 = new Transaction(3, 1, this.parseDate(d1.toString()), 111.5f, 72);
+		transList.add(t1);
+		transList.add(t2);
+		transList.add(t3);
+	}
+	
+//	private JdbcTemplate template;  
 	
 	/**Get all customers info from customer table
 	 * Sql will be: select fullName, address, phone, email from customer_table;
 	 * @return
 	 */
-	public CustomerPointRepoImpl(JdbcTemplate template) {
+/*	public CustomerPointRepoImpl(JdbcTemplate template) {
 		this.template = template;
-	}
+	}*/
 	
 	public List<Customer> getCustomers() throws DatabaseException {
 		String sql = "select * from customer_table";
-		CustomerMapper mapper = new CustomerMapper();
+	//	CustomerMapper mapper = new CustomerMapper();
 		List<Customer> list = new ArrayList<Customer>();
 		try {
-			list = template.query(sql, mapper);
+		//	list = template.query(sql, mapper);
 		} catch (Exception e) {
 			throw new DatabaseException(e.getMessage());
 		}
-		
+		list = cList;
 		return list;
 	}
 	
@@ -68,9 +99,9 @@ public class CustomerPointRepoImpl implements CustomerPointsRepo {
 			sql.append(" email = " + params.get("email"));
 		}
 		
-		CustomerMapper mapper = new CustomerMapper();
+	//	CustomerMapper mapper = new CustomerMapper();
 		try {
-			list = template.query(sql.toString(), mapper);
+		//	list = template.query(sql.toString(), mapper);
 		} catch(Exception e) {
 			throw new DatabaseException(e.getMessage());
 		}
@@ -78,34 +109,43 @@ public class CustomerPointRepoImpl implements CustomerPointsRepo {
 		return list;
 	}
 	
-	//Get all transactions for specific customers
-	public List<Transaction> getTransactions(Customer customer) throws DatabaseException {
-		List<Transaction> list = new ArrayList<>();
-		Integer custId = customer.getCustomerId(); //if input customer info does not contain customerId, try to find it in db 
-		if (custId == null || custId == 0) {
-			List<Customer> custList = this.findCustomerByPhoneOrNameOrEmail(customer.getFullName(), 
-					customer.getPhoneNum(), customer.getEmail());
-			if (custList!= null && !custList.isEmpty()) {
-				custId = custList.get(0).getCustomerId();
-			} else {
-				return new ArrayList<Transaction>();
+	//Add New Customer at first transaction
+	public int addCustomer(Customer customer) throws DatabaseException {
+		String sql = "insert into customer_table (fullName, address, phone, email) values(" + 
+	customer.getFullName() + ", " + customer.getAddress()+ ", " + customer.getPhoneNum() + ", " +
+				customer.getEmail() + ")";
+		// after insert, try to get the customerId
+		int custId = 0;
+		try {
+		//	template.execute(sql);
+			List<Customer> list = this.findCustomerByPhoneOrNameOrEmail(customer.getFullName(), customer.getPhoneNum(), customer.getEmail());
+			if (list!= null && !list.isEmpty()) {
+				custId = list.get(0).getCustomerId();
 			}
+		} catch(Exception e) {
+			throw new DatabaseException(e.getMessage());
 		}
+		return custId;
+	}
+	
+	//Get all transactions for specific customers
+	public List<Transaction> getTransactions(Integer custId) throws DatabaseException {
+		List<Transaction> list = new ArrayList<>();
 		String sql = "select * from transaction_table where customer_id = " + custId;
 		
-		TransactionMapper mapper = new TransactionMapper();
+//		TransactionMapper mapper = new TransactionMapper();
 		try {
-			list = template.query(sql, mapper);
+		//	list = template.query(sql, mapper);
 		} catch (Exception e) {
 			throw new DatabaseException(e.getMessage());
 		}
 		
-		
+		list = transList;
 		return list;
 	}
 	
 	//Save Transaction Points when a new transaction happens
-		public int savePoints(Transaction transaction, Customer customer) throws DatabaseException {
+		public int savePoints(Transaction transaction) throws DatabaseException {
 			Integer points = 0;
 			float amount = transaction.getPurchaseAmout();
 			
@@ -114,21 +154,13 @@ public class CustomerPointRepoImpl implements CustomerPointsRepo {
 			} else if (amount > 100.0) {
 				points = (int)Math.floor(amount - 50.0) + (int)Math.floor(amount - 100.0);
 			}
-			Integer custId = customer.getCustomerId();
-			if (custId == null || custId == 0) {
-				List<Customer> custList = this.findCustomerByPhoneOrNameOrEmail(customer.getFullName(), 
-						customer.getPhoneNum(), customer.getEmail());
-				if (custList!= null && !custList.isEmpty()) {
-					custId = custList.get(0).getCustomerId();
-				} else {
-					throw new DatabaseException("Customer does not exist!");
-				}
-			}
+			Integer custId = transaction.getCustomerId();
+			
 			//assume transaction_id is a sequence number in database
 			String sql = "insert into transaction_table (customer_id, purchase_date, purchase_amount, points) "
 					+ "values(" + custId + ",sysdate, " + amount + ", " + points + ")";
 			try {
-				template.execute(sql);
+			//	template.execute(sql);
 			}catch (Exception e) {
 				throw new DatabaseException(e.getMessage());
 			}
@@ -137,50 +169,41 @@ public class CustomerPointRepoImpl implements CustomerPointsRepo {
 		
 		
 	//Get specific month points that the customer accumulated
-	public int getMonthlyPoints(Customer customer, int month, int year) throws DatabaseException {
-		Integer custId = customer.getCustomerId(); //if input customer info does not contain customerId, try to find it in db 
-		if (custId == null || custId == 0) {
-			List<Customer> custList = this.findCustomerByPhoneOrNameOrEmail(customer.getFullName(), 
-					customer.getPhoneNum(), customer.getEmail());
-			if (custList!= null && !custList.isEmpty()) {
-				custId = custList.get(0).getCustomerId();
-			} else {
-				return 0;
-			}
-		}
-		Date d1 = new GregorianCalendar(year, month+1, 1).getTime();
-		int newYear = 0, newMonth =0;
-		if (month == 12) {
-			newYear = year + 1;
-			newMonth = 1;
-		}
-		Date d2 = new GregorianCalendar(newYear, newMonth, 1).getTime();
+	public int getMonthlyPoints(Integer custId, int month) throws DatabaseException {
+		Date d1 = new GregorianCalendar(2023, month-1, 1).getTime();
+		
+		Date d2 = new GregorianCalendar(2023, month, 1).getTime();
 		String sql = "select * from transaction_table where customer_id = " + custId + " and purchase_date >= " + 
 		parseDate(d1.toString()) + " and purchase_date < " + parseDate(d2.toString());
-		TransactionMapper mapper = new TransactionMapper();
+//		TransactionMapper mapper = new TransactionMapper();
 		List<Transaction> list = new ArrayList<>();
 		try {
-			list = template.query(sql, mapper);
+			//list = template.query(sql, mapper);
 		} catch(Exception e) {
 			throw new DatabaseException(e.getMessage());
 		}
 		int totalPoints = 0;
-		for(Transaction tran: list) {
-			totalPoints+= tran.getPoints();
+		for(int i=0; i<transList.size(); i++) {
+			Transaction tran = transList.get(i);
+			Date d = tran.getPurchaseDate();
+			if (tran.getCustomerId().equals(custId) && (d.after(d1) ||d.equals(d1)) && d.before(d2)) {
+				totalPoints+= tran.getPoints();
+			}
+			
 		}
 		return totalPoints;
 	}
 	
 	 private Date parseDate(String date) {
 	     try {
-	         return new SimpleDateFormat("MM/DD/YY").parse(date);
+	         return new SimpleDateFormat("MM/DD/YYYY").parse(date);
 	     } catch (ParseException e) {
 	         return null;
 	     }
 	  }
 	//Get total points the customer accumulated
-	public int getTotalPoints(Customer customer) throws DatabaseException {
-		List<Transaction> list = this.getTransactions(customer);
+	public int getTotalPoints(Integer custId) throws DatabaseException {
+		List<Transaction> list = this.getTransactions(custId);
 		int totalPoints = 0;
 		if (list != null && !list.isEmpty()) {
 			for(Transaction tran: list) {

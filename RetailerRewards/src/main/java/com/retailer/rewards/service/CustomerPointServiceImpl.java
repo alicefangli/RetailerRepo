@@ -20,10 +20,9 @@ public class CustomerPointServiceImpl implements CustomerPointsService {
 	
 	@Override
 	public List<Customer> getCustomers() throws DatabaseException {
-		// TODO Auto-generated method stub
-		return repo.getCustomers();
+		return repo.getCustomers(); 
 	}
-
+	
 	@Override
 	public List<Customer> findCustomerByPhoneOrNameOrEmail(String name, String phone, String email) throws DatabaseException {
 		// TODO Auto-generated method stub
@@ -31,27 +30,27 @@ public class CustomerPointServiceImpl implements CustomerPointsService {
 	}
 
 	@Override
-	public List<Transaction> getTransactions(Customer customer) throws DatabaseException {
+	public List<Transaction> getTransactions(Integer custId) throws DatabaseException {
 		// TODO Auto-generated method stub
-		return repo.getTransactions(customer);
+		return repo.getTransactions(custId);
 	}
 
 	@Override
-	public int savePoints(Transaction transaction, Customer customer) throws DatabaseException {
+	public int savePoints(Transaction trans) throws DatabaseException {
 		// TODO Auto-generated method stub
-		return repo.savePoints(transaction, customer);
+		return repo.savePoints(trans);
 	}
 
 	@Override
-	public int getMonthlyPoints(Customer customer, int month, int year) throws DatabaseException {
+	public int getMonthlyPoints(Integer custId, int month) throws DatabaseException {
 		// TODO Auto-generated method stub
-		return repo.getMonthlyPoints(customer, month, year);
+		return repo.getMonthlyPoints(custId, month);
 	}
 
 	@Override
-	public int getTotalPoints(Customer customer)  throws DatabaseException{
+	public int getTotalPoints(Integer custId) throws DatabaseException{
 		// TODO Auto-generated method stub
-		return repo.getTotalPoints(customer);
+		return repo.getTotalPoints(custId);
 	}
 
 }

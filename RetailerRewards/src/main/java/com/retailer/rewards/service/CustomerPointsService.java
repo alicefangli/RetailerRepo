@@ -14,14 +14,14 @@ public interface CustomerPointsService {
 		public List<Customer> findCustomerByPhoneOrNameOrEmail(String name, String phone, String email) throws DatabaseException;
 		
 		//Get all transactions for specific customers
-		public List<Transaction> getTransactions(Customer customer) throws DatabaseException;
+		public List<Transaction> getTransactions(Integer custId) throws DatabaseException;
 		
 		//Save Transaction Points when a transaction happens
-		public int savePoints(Transaction transaction, Customer customer) throws DatabaseException;
+		public int savePoints(Transaction trans) throws DatabaseException;
 		
 		//Get specific month points that the customer accumulated
-		public int getMonthlyPoints(Customer customer, int month, int year) throws DatabaseException;
+		public int getMonthlyPoints(Integer customerId, int month) throws DatabaseException;
 		
 		//Get total points the customer accumulated
-		public int getTotalPoints(Customer customer) throws DatabaseException;
+		public int getTotalPoints(Integer custId) throws DatabaseException;
 }

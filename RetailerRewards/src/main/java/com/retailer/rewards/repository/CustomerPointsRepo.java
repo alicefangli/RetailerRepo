@@ -11,15 +11,18 @@ public interface CustomerPointsRepo {
 	//Find specific customer for given name, phone or email
 	public List<Customer> findCustomerByPhoneOrNameOrEmail(String name, String phone, String email) throws DatabaseException;
 	
+	//Add New Customer at first transaction
+	public int addCustomer(Customer customer) throws DatabaseException;
+	
 	//Get all transactions for specific customers
-	public List<Transaction> getTransactions(Customer customer) throws DatabaseException;
+	public List<Transaction> getTransactions(Integer custId) throws DatabaseException;
 	
 	//Save Transaction Points when a transaction happens
-	public int savePoints(Transaction transaction, Customer customer) throws DatabaseException;
+	public int savePoints(Transaction tran) throws DatabaseException;
 	
 	//Get specific month points that the customer accumulated
-	public int getMonthlyPoints(Customer customer, int month, int year) throws DatabaseException;
+	public int getMonthlyPoints(Integer custId, int startMonth) throws DatabaseException;
 	
 	//Get total points the customer accumulated
-	public int getTotalPoints(Customer customer) throws DatabaseException;
+	public int getTotalPoints(Integer custId) throws DatabaseException;
 }

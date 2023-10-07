@@ -1,17 +1,21 @@
-/**
- * 
- */
 package com.retailer.rewards.model;
 
-/**
- * 
- */
 public class Customer {
 	private Integer customerId;
 	private String fullName;
 	private String address;
 	private String phoneNum;
 	private String email;
+	
+	public Customer() {}
+	
+	public Customer(Integer customerId, String name, String address, String phone, String email) {
+		this.customerId = customerId;
+		this.fullName = name;
+		this.address = address;
+		this.phoneNum = phone;
+		this.email = email;
+	}
 	
 	public String getFullName() {
 		return fullName;

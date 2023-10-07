@@ -1,5 +1,8 @@
 package com.retailer.rewards.RepositoryTest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -36,11 +39,12 @@ public class TestCustomerPointsRepo {
 		tran3.setCustomerId(2);
 		tran3.setPurchaseAmout(125.86f);
 		
-		int points = repo.savePoints(tran1, customer);
+		int points = repo.savePoints(tran1);
 		Assertions.assertEquals(points, 48);
-		points = repo.savePoints(tran2, customer);
+		points = repo.savePoints(tran2);
 		Assertions.assertEquals(points, 0);
-		points = repo.savePoints(tran3,  customer);
+		points = repo.savePoints(tran3);
 		Assertions.assertEquals(points, 100);
+
 	}
 }
