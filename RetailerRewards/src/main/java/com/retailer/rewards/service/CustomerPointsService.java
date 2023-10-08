@@ -3,6 +3,7 @@ package com.retailer.rewards.service;
 import java.util.List;
 
 import com.retailer.rewards.model.Customer;
+import com.retailer.rewards.model.PointVO;
 import com.retailer.rewards.model.Transaction;
 import com.retailer.rewards.repository.DatabaseException;
 
@@ -17,11 +18,11 @@ public interface CustomerPointsService {
 		public List<Transaction> getTransactions(Integer custId) throws DatabaseException;
 		
 		//Save Transaction Points when a transaction happens
-		public int savePoints(Transaction trans) throws DatabaseException;
+		public PointVO savePoints(Transaction trans) throws DatabaseException;
 		
 		//Get specific month points that the customer accumulated
-		public int getMonthlyPoints(Integer customerId, int month) throws DatabaseException;
+		public PointVO getMonthlyPoints(Integer customerId, int month) throws DatabaseException;
 		
 		//Get total points the customer accumulated
-		public int getTotalPoints(Integer custId) throws DatabaseException;
+		public PointVO getTotalPoints(Integer custId) throws DatabaseException;
 }

@@ -40,36 +40,52 @@ public class CustomerPointsController {
 		return builder.body(list);
 	}
 
-	/*@GetMapping("/transactions")
-	public List<Transaction> getTransactions(@RequestBody Customer customer) {
+	@GetMapping(value="/transactions/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Transaction>> getTransactions(@PathVariable int customerId) {
 		List<Transaction> list = new ArrayList<>();
 		try {
-		list = service.getTransactions(customer);
+		list = service.getTransactions(customerId);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
-		return list;
+		ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+		return builder.body(list);
 	}
 	
-	@GetMapping("/monthlypoints")
-	public int getMonthlyPoints(int customerId, int month) {
-		int points = 0;
+	@PostMapping(value="/savePoints", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PointVO> savePoints(@RequestBody Transaction trans) {
+		PointVO vo = null;
 		try {
-			points = service.getMonthlyPoints(customerId, month);
+			vo = service.savePoints(trans);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
-		return points;
+		ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+		return builder.body(vo);
 	}
 	
-	@GetMapping("/totalpoints/{customerId}")
-	public int getTotalPoints(@PathVariable Integer customerId) {
-		int points = 0;
+	@GetMapping(value="/monthlypoints/{customerId}/{month}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PointVO> getMonthlyPoints(@PathVariable int customerId, @PathVariable int month) {
+		PointVO vo = null;
 		try {
-			points = service.getTotalPoints(customerId);
+			vo = service.getMonthlyPoints(customerId, month);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
-		return points;
-	} */
+		ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+		return builder.body(vo);
+	}
+	
+	@GetMapping(value="/totalpoints/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PointVO> getTotalPoints(@PathVariable Integer customerId) {
+		PointVO vo = null;
+		try {
+			vo = service.getTotalPoints(customerId);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+		return builder.body(vo);
+	}
 }

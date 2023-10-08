@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.retailer.rewards.model.Customer;
+import com.retailer.rewards.model.PointVO;
 import com.retailer.rewards.model.Transaction;
 import com.retailer.rewards.repository.CustomerPointsRepo;
 import com.retailer.rewards.repository.DatabaseException;
@@ -36,19 +37,19 @@ public class CustomerPointServiceImpl implements CustomerPointsService {
 	}
 
 	@Override
-	public int savePoints(Transaction trans) throws DatabaseException {
+	public PointVO savePoints(Transaction trans) throws DatabaseException {
 		// TODO Auto-generated method stub
 		return repo.savePoints(trans);
 	}
 
 	@Override
-	public int getMonthlyPoints(Integer custId, int month) throws DatabaseException {
+	public PointVO getMonthlyPoints(Integer custId, int month) throws DatabaseException {
 		// TODO Auto-generated method stub
 		return repo.getMonthlyPoints(custId, month);
 	}
 
 	@Override
-	public int getTotalPoints(Integer custId) throws DatabaseException{
+	public PointVO getTotalPoints(Integer custId) throws DatabaseException{
 		// TODO Auto-generated method stub
 		return repo.getTotalPoints(custId);
 	}

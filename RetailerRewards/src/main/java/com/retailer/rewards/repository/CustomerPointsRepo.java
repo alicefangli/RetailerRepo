@@ -18,11 +18,11 @@ public interface CustomerPointsRepo {
 	public List<Transaction> getTransactions(Integer custId) throws DatabaseException;
 	
 	//Save Transaction Points when a transaction happens
-	public int savePoints(Transaction tran) throws DatabaseException;
+	public PointVO savePoints(Transaction tran) throws DatabaseException;
 	
 	//Get specific month points that the customer accumulated
-	public int getMonthlyPoints(Integer custId, int startMonth) throws DatabaseException;
+	public PointVO getMonthlyPoints(Integer custId, int startMonth) throws DatabaseException;
 	
 	//Get total points the customer accumulated
-	public int getTotalPoints(Integer custId) throws DatabaseException;
+	public PointVO getTotalPoints(Integer custId) throws DatabaseException;
 }
